@@ -4,7 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Cybertruck 2025 Interactive Estimator</title>
-<style>
+<style> .color-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  transition: background-color 0.4s ease;
+}
   body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -218,6 +224,14 @@
   calculateEstimate();
   colorOverlay.style.backgroundColor = colorSelect.options[colorSelect.selectedIndex].getAttribute('data-color') || 'rgba(255,255,255,0)';
 </script>
+const colorSelect = document.getElementById('color');
+const colorOverlay = document.getElementById('colorOverlay');
 
+colorSelect.addEventListener('change', () => {
+  const selectedOption = colorSelect.options[colorSelect.selectedIndex];
+  const color = selectedOption.getAttribute('data-color') || 'rgba(255,255,255,0)';
+  colorOverlay.style.backgroundColor = color;
+});
+});
 </body>
 </html>
