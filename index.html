@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cybertruck 2025 Interactive Estimator</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a, #222);
+    color: #eee;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    align-items: center;
+    padding: 20px;
+  }
+  h1 {
+    margin-bottom: 10px;
+  }
+  .container {
+    max-width: 900px;
+    width: 100%;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .customizer {
+    flex: 1 1 320px;
+    background: #111;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 0 15px #00ffcc55;
+  }
+  .customizer h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #00ffcc;
+    padding-bottom: 8px;
+  }
+  label {
+    display: block;
+    margin: 10px 0 6px;
+    font-weight: 600;
+  }
+  select, input[type=checkbox] {
+    font-size: 16px;
+    padding: 8px;
+    width: 100%;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    background: #222;
+    color: #eee;
+    cursor: pointer;
+  }
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  button {
+    background: #00ffcc;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 700;
+    color: #111;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 10px;
+    width: 100%;
+  }
+  button:hover {
+    background: #00ccaaff;
+  }
+
+  .preview {
+    flex: 1 1 450px;
+    position: relative;
+    background: #222;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #00ffcc55;
+    overflow: hidden;
+  }
+  .car-image {
+    width: 100%;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* Color overlay technique: a colored div on top with mix-blend-mode */
+  .color-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    transition: background-color 0.4s ease;
+  }
+
+  /* Price display */
+  #estimate {
+    margin-top: 20px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #00ffcc;
+    text-align: center;
+  }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    .container {
+      flex-direction: column;
+      gap: 20px;
+    }
+    .preview, .customizer {
+      flex: 1 1 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>🛻 Cybertruck 2025 Interactive Estimator</h1>
+
+<div class="container">
+  <section class="customizer" aria-label="Customize your Cybertruck">
+    <h2>Customize Your Cybertruck</h2>
+
+    <label for="trim">Trim Level</label>
+    <select id="trim" aria-describedby="trim-desc">
+      <option value="60000">Single Motor RWD — $60,000</option>
+      <option value="80000">Dual Motor AWD — $80,000</option>
+      <option value="100000">Tri Motor AWD — $100,000</option>
+    </select>
+    <small id="trim-desc">Choose your drive configuration</small>
+
+    <label for="color">Color</label>
+    <select id="color" aria-describedby="color-desc">
+      <option value="none" data-color="rgba(255,255,255,0)">Stainless Steel (Default)</option>
+      <option value="white" data-color="rgba(255,255,255,0.7)">Pearl White</option>
+      <option value="black" data-color="rgba(0,0,0,0.8)">Matte Black</option>
+      <option value="blue" data-color="rgba(0,85,170,0.5)">Deep Blue</option>
+      <option value="red" data-color="rgba(170,0,0,0.5)">Red</option>
+    </select>
+    <small id="color-desc">Live preview changes the car color</small>
+
+    <label for="wheels">Wheels</label>
+    <select id="wheels">
+      <option value="0">Standard Wheels (Included)</option>
+      <option value="2500">Cyber Wheels (+$2,500)</option>
+      <option value="4000">Off-Road Wheels (+$4,000)</option>
+    </select>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="autopilot" value="7000" />
+      <label for="autopilot">Full Self-Driving Capability (+$7,000)</label>
+    </div>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="interior" value="5000" />
+      <label for="interior">Premium Interior Upgrade (+$5,000)</label>
+    </div>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="suspension" value="3000" />
+      <label for="suspension">Adaptive Air Suspension (+$3,000)</label>
+    </div>
+
+    <div class="checkbox-group">
+      <input type="checkbox" id="offroad" value="3500" />
+      <label for="offroad">Off-Road Package (+$3,500)</label>
+    </div>
+
+    <button onclick="calculateEstimate()">Get Estimate</button>
+    <div id="estimate" aria-live="polite"></div>
+  </section>
+
+  <section class="preview" aria-label="Cybertruck preview">
+    <img 
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Tesla_Cybertruck%2C_IAA_2019_1X7A0005.jpg/800px-Tesla_Cybertruck%2C_IAA_2019_1X7A0005.jpg" 
+      alt="Tesla Cybertruck grayscale preview" 
+      class="car-image" id="carImage" />
+    <div id="colorOverlay" class="color-overlay"></div>
+  </section>
+</div>
+
+<script>
+  function calculateEstimate() {
+    const trimPrice = parseInt(document.getElementById('trim').value);
+    const wheelsPrice = parseInt(document.getElementById('wheels').value);
+
+    const autopilot = document.getElementById('autopilot').checked ? parseInt(document.getElementById('autopilot').value) : 0;
+    const interior = document.getElementById('interior').checked ? parseInt(document.getElementById('interior').value) : 0;
+    const suspension = document.getElementById('suspension').checked ? parseInt(document.getElementById('suspension').value) : 0;
+    const offroad = document.getElementById('offroad').checked ? parseInt(document.getElementById('offroad').value) : 0;
+
+    const total = trimPrice + wheelsPrice + autopilot + interior + suspension + offroad;
+    const estimateEl = document.getElementById('estimate');
+    estimateEl.textContent = `Estimated Total: $${total.toLocaleString()}`;
+  }
+
+  // Color overlay changing logic
+  const colorSelect = document.getElementById('color');
+  const colorOverlay = document.getElementById('colorOverlay');
+
+  colorSelect.addEventListener('change', () => {
+    const selectedOption = colorSelect.options[colorSelect.selectedIndex];
+    const color = selectedOption.getAttribute('data-color') || 'rgba(255,255,255,0)';
+    colorOverlay.style.backgroundColor = color;
+  });
+
+  // Initialize
+  calculateEstimate();
+  colorOverlay.style.backgroundColor = colorSelect.options[colorSelect.selectedIndex].getAttribute('data-color') || 'rgba(255,255,255,0)';
+</script>
+
+</body>
+</html>
